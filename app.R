@@ -1,4 +1,3 @@
-#load("C:/Users/danie/Dropbox/NeaR/PNAD/modelo28/dados_1.RData")
 
 
 library(dplyr)
