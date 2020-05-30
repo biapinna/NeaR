@@ -1,2 +1,2 @@
 # NeaR
-PROJETO REFERENTE A VISUALIZAÇÃO DE DADOS INTERATIVOS NO R: CONSTRUINDO UMA APLICAÇÃO SHINY UTILIZANDO O SIDRA/IBGE
+Projeto referente a Vsualização de Dados Interativos no R: Construindo uma aplicação Shiny utilizando o SIDRA/IBGE
