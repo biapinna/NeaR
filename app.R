@@ -20,7 +20,7 @@ dados261<-get_sidra(api="/t/261/n1/all/n2/all/n3/all/v/allxp/p/last%2011/c1/allx
 
 
 #Renomeando as colunas
-colnames(dados261)<-c("nt_cod","nt","regiao_cod","regiao","va_cod","va","ano_cod","ano","dom_cod","domicilio","sexo_cod","sexo","id_cod","idade","um_cod","um","valor")
+colnames(dados261)<-c("nt_cod","nt","um_cod","um","valor","regiao_cod","regiao","va_cod","va","ano_cod","ano","dom_cod","domicilio","sexo_cod","sexo","id_cod","idade")
 
 #transformando as variaveis que estao como "char" em "integer"
 names1 <- c("nt_cod","regiao_cod","va_cod","ano_cod","dom_cod","sexo_cod","id_cod","um_cod")
@@ -43,7 +43,7 @@ cores<-c("Set3", "Set2","Set1", "Pastel2","Pastel1","Paired","Dark2","Accent","Y
 dados262<-get_sidra(api="/t/262/n2/all/n3/all/v/allxp/p/last%2011/c86/allxt/c1/allxt/c2/allxt/d/v93%203")
 
 #Renomeando as colunas
-colnames(dados262)<-c("nt_cod","nt","regiao_cod","regiao","va_cod","va","ano_cod","ano", "cor_cod1","Raca","dom_cod","domicilio","sexo_cod","sexo","um_cod","um","valor")
+colnames(dados262)<-c("nt_cod","nt","um_cod","um","valor","regiao_cod","regiao","va_cod","va","ano_cod","ano","cor_cod1","Raca","dom_cod","domicilio","sexo_cod","sexo")
 
 
 #transformando as variaveis que estao como "char" em "integer"
@@ -74,8 +74,8 @@ ui <- navbarPage(theme = shinytheme("cerulean"),"NeaR",
                             tags$p("Para este trabalho foi necessário estudar os principais pacotes para confecção de gráficos interativos para visualizar as características importantes de um conjunto de dados. Os principais pacotes utilizados para representações gráficas são: ggplot2, plotly e highcharter. Apresentamos várias formas de gráficos interativos nesta aplicação produzida e indicamos como elas podem ser realizadas na forma de manuais introdutórios aos principais pacotes 
                                    de visualização disponibilizados em uma conta no RPubs.", a(href="http://rpubs.com/near_ence", "Clique aqui!"))
                             
-                            )
-                          ), #close tabPanel projeto
+                          )
+                 ), #close tabPanel projeto
                  navbarMenu("Tipos de Gráficos",
                             tabPanel("Barras",
                                      sidebarLayout(position = "left",
@@ -212,7 +212,7 @@ ui <- navbarPage(theme = shinytheme("cerulean"),"NeaR",
                                      
                             ) #close tabPanel box
                  ) #close navbar Menu gráficos
-                          )# close navbarPage
+)# close navbarPage
 
 
 
@@ -454,26 +454,25 @@ server <- function(input, output, session) {
     mapdata = mapdata %>%
       mutate(regiao2 = fc4(mapdata$`woe-label`))
     
-    dados261$regiao2<-dados261$regiao
-    
-    dados261$regiao2<-fc5(dados261$regiao2)
-    
-    data7<- reactive(fc6(dados261, input$anomap, "regiao","regiao2","ano")) 
+    dados261$regiao2 <- fc5(dados261$regiao)
     
     
-    data8<-reactive(merge(x = data7(), y = mapdata, by = "regiao2", all = TRUE))
+    data8<-merge(x = fc6(dados261, as.name(input$anomap), "regiao","regiao2","ano"),
+                 y = mapdata, by = "regiao2", all = TRUE)
     
     
-    hcoptslang <- getOption("highcharter.lang")
-    hcoptslang$thousandsSep <- ","
-    options(highcharter.lang = hcoptslang)
+    # hcoptslang <- getOption("highcharter.lang")
+    # hcoptslang$thousandsSep <- ","
+    # options(highcharter.lang = hcoptslang)
     
-    hcmap("countries/br/br-all", data = data8(), value = "valor6",
+    hcmap("countries/br/br-all", data = data8, value = "valor6",
           joinBy = c("hc-a2", "hc-a2"), name= " ", color=unique,
           tooltip = list(valueDecimals = 6, valuePrefix = "")) %>%
       hc_title(text = input$ttmap)  %>%
-      hc_tooltip(pointFormat = "Estado: {point.regiao} <br> População Residente: {point.valor6: .,6f} milhões ")
-    
+      #hc_tooltip(pointFormat = "Estado: <b>{point.regiao}</b> <br> População Residente: {point.value: .,6f} milhões ")
+      hc_tooltip(formatter = JS("function() {
+        return 'Estado: <b>' + this.point.regiao + '</b> <br/> População Residente: ' +  Highcharts.numberFormat(this.point.value, 4, ',', '.') + ' milhões <br/>';
+      }"))
     
     
   })
