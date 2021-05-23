@@ -1,0 +1,13 @@
+name: pnad
+title: pnad
+username:
+account: beatrizrpinna
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 541304
+bundleId: 4630786
+url: https://beatrizrpinna.shinyapps.io/pnad/
+when: 1621798186.43356
+lastSyncTime: 1621798186.43356
+asMultiple: FALSE
+asStatic: FALSE
